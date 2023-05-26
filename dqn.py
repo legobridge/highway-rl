@@ -26,7 +26,7 @@ def create_dqn_model(input_shape, action_space):
     X = Dense(action_space, activation='linear', kernel_initializer='he_uniform')(X)
 
     model = Model(inputs=X_input, outputs=X, name='DQN_model')
-    model.compile(loss='mse', optimizer=Adam(learning_rate=0.0004))
+    model.compile(loss='mse', optimizer=Adam(learning_rate=0.0002))
 
     model.summary()
     return model
@@ -95,7 +95,7 @@ class DQNAgent:
                 targets[i, actions[i]] = rewards[i] + self.gamma * np.max(targets_next[i])
 
         # Train the Neural Network with batches where target is the value function
-        self.model.fit(states, targets, batch_size=self.batch_size)
+        self.model.fit(states, targets, batch_size=self.batch_size, verbose=0)
 
     def load(self, name):
         self.model = load_model(name)
@@ -170,7 +170,7 @@ class DQNAgent:
 def main():
     agent = DQNAgent()
     rewards = agent.train()
-    with open(f'rewards.txt', 'w') as f:
+    with open(f'dqn_rewards.txt', 'w') as f:
         f.write(str(rewards))
     plot_df = pd.DataFrame({'episodes': list(range(1, len(rewards) + 1)), 'timesteps_survived': rewards})
     sns.lineplot(plot_df, x='episodes', y='timesteps_survived')
