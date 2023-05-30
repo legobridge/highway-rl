@@ -4,20 +4,6 @@ import json
 import pprint
 import matplotlib.pyplot as plt
 
-def main():
-
-    config = json.load(open('config.json', 'r'))
-    env = gym.make('highway-v0', render_mode='rgb_array')
-    env.configure(config)
-
-    while True:
-        done = truncated = False
-        obs, info = env.reset()
-        while not (done or truncated):
-            action = env.action_type.actions_indexes["IDLE"]
-            obs, reward, done, truncated, info = env.step(action)
-            env.render()
-
 
 class ValueIterationAgent:
     def __init__(self, env):
