@@ -1,7 +1,5 @@
 import gymnasium as gym
 import numpy as np
-import json
-import pprint
 import matplotlib.pyplot as plt
 
 
@@ -51,7 +49,7 @@ class ValueIterationAgent:
                 # delta = max(delta, abs(prev_values[state] - self.values[state]))
 
             #if delta <= self.epsilon:
-            if np.sum(np.fabs(prev_values - self.values)) <= 1e-10:
+            if np.sum(np.fabs(prev_values - self.values)) <= 1e-18:
                 print('Problem converged at iteration %d.' % (i + 1))
                 break
 
@@ -61,7 +59,8 @@ class ValueIterationAgent:
             done = False
             steps_survived = 0
             total_reward = 0
-            state = np.random.choice(self.num_states)
+            self.mdp.state = np.random.choice(self.num_states)
+            state = self.mdp.state
 
             while not done:
                 action = self.policy[state]
@@ -88,9 +87,9 @@ class ValueIterationAgent:
 
 if __name__ == '__main__':
 
-    config = json.load(open('config.json', 'r'))
+    # config = json.load(open('config.json', 'r'))
     env = gym.make("highway-v0", render_mode="rgb_array")
-    # env.configure(config)
+    env.config['policy_frequency'] = 10
 
     # create value iteration agent
     agent = ValueIterationAgent(env)
